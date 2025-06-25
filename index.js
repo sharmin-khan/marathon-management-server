@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
+const { ObjectId } = require("mongodb");
 
 //middleware setup
 app.use(cors());
@@ -32,6 +33,13 @@ async function run() {
     app.get("/marathon", async (req, res) => {
       const cursor = marathonCollection.find().limit(6);
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/marathon/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await marathonCollection.findOne(query);
       res.send(result);
     });
 
