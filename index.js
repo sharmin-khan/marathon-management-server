@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 
-//middleware
+//middleware setup
 app.use(cors());
 app.use(express.json());
 
@@ -24,6 +24,17 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const marathonCollection = client
+      .db("marathonManagement")
+      .collection("marathon");
+    //GET API to fetch 6 marathons
+    app.get("/marathon", async (req, res) => {
+      const cursor = marathonCollection.find().limit(6);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
